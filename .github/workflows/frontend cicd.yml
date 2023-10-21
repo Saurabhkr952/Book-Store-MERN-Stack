@@ -1,0 +1,54 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**' # Trigger only for changes in the frontend directory
+
+jobs:
+  build-and-push-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+
+      - name: Build & push frontend Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          directory: frontend
+          image: saurabhkr952/book-store-mern
+          tags: frontend-${{ github.sha }}
+          registry: docker.io
+          dockerfile: frontend/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+  update-kubernetes-manifest:  # this job will update the kubernetes manifest files image version tag
+    runs-on: ubuntu-latest 
+    needs:
+      - build-and-push-frontend
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          repository: saurabhkr952/Book-Store-MERN-Stack  
+          ref: 'main'
+          token: ${{ secrets.PAT_TOKEN }}                   
+      - name: setup git config
+        run: |
+          git config --local user.email "saurabhkr952@gmail.com"  
+          git config --local user.name "saurabhkr952"
+          echo ${{ github.sha }}
+          sed -i 's+saurabhkr952/book-store-mern:frontend.*+saurabhkr952/book-store-mern:frontend-${{ github.sha }}+g' kubernetes-manifests/1.frontend.yaml                          
+          git add -A
+          git commit -m "update image tag for - ${{ github.sha }}"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          repository: saurabhkr952/Book-Store-MERN-Stack  
+          force: true 
+
+
+# sed -i 's+saurabhkr952/book-store-mern:frontend-.*+saurabhkr952/book-store-mern:frontend-${{ github.sha }}+g' kubernetes-manifests/"1. frontend.yaml"          

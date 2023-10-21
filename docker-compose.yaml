@@ -1,0 +1,54 @@
+# ME_CONFIG_MONGODB_URL     : mongodb://root:example@mongo:27017/books-collection  # use database service name in place of mongo
+
+
+version: '3.9'
+services:
+  mongo:
+    image: mongo:7.0-jammy
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example    
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    depends_on:
+      - mongo  
+
+  # Node.js (Express) service
+  express-app:
+    build:
+      context: ./backend   
+    container_name: backend
+    ports:
+      - "5555:5555"
+    depends_on:
+      - mongo
+      - mongo-express
+#    environment:
+#      MONGO_URI: mongodb://root:example@mongo.default.svc.cluster.local:27017/books-collection?authSource=admin
+
+  # Frontend service
+  react-app:
+    build:
+      context: ./frontend 
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - express-app
+
+volumes:
+  mongo-data:
