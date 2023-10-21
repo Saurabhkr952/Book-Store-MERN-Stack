@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: saurabhkr952/book-store-mern:backend-3e4c8acf07dd15709520d6f44aa7272c5e856bc7
+        image: saurabhkr952/book-store-mern:backend-05d054d1bee2c8882e97118f258bfb0a72897217
         ports:
         - containerPort: 5555
         volumeMounts:
