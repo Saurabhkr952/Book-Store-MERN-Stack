@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: saurabhkr952/book-store-mern:frontend-fe665f5778ad45d93543cab0a7da2b814337e99f
+        image: saurabhkr952/book-store-mern:frontend-05d054d1bee2c8882e97118f258bfb0a72897217
         ports:
         - containerPort: 80
 
