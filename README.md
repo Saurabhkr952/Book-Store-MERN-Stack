@@ -29,6 +29,9 @@
 
 ### Kubernetes Deployment
 
+![mern](https://github.com/Saurabhkr952/Book-Store-MERN-Stack/assets/32189783/587b967d-4243-449f-b575-22e0fc4cd694)
+
+
 In a recent update, I've extended the capabilities of this project by configuring it for Kubernetes (K8s) deployment. These changes include:
 
 - **MongoDB Configuration**: I've made adjustments to the `backend/config.js` file to configure the MongoDB URL. This modification allows our backend to seamlessly interact with a MongoDB database deployed within our Kubernetes cluster.
