@@ -4,7 +4,8 @@ metadata:
   name: mern-ingress
 spec:
   rules:
-    - host: book-store.com
+    - ingressClassName: nginx
+      host: book-store.com
       http:
         paths:
           - pathType: Prefix
